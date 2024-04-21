@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const thoughtSchema = require("./Thought");
+const Thought = require("./Thought");
 
 // Schema to create Student model
 const userSchema = new Schema(
@@ -27,6 +27,17 @@ const userSchema = new Schema(
 
 userSchema.virtual("friendCount").get(function () {
 	return this.friends.length;
+});
+
+userSchema.virtual("thoughts", {
+	ref: "Thought",
+	localField: "_id",
+	foreignField: "userId",
+});
+
+userSchema.pre("remove", async function (next) {
+	await this.model("Thought").deleteMany({ userId: this._id });
+	next();
 });
 
 const User = model("user", userSchema);
