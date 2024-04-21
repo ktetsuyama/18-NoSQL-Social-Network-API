@@ -12,6 +12,9 @@ const thoughtSchema = new Schema(
 		createdAt: {
 			type: Date,
 			default: Date.now,
+			get: function (value) {
+				return value.toDateString();
+			},
 		},
 		username: {
 			type: String,

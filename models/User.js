@@ -7,15 +7,32 @@ const userSchema = new Schema(
 		username: {
 			type: String,
 			required: true,
-			max_length: 50,
+			unique: true,
+			trim: true,
 		},
 		email: {
 			type: String,
 			required: true,
-			max_length: 50,
+			unique: true,
+			validate: {
+				validator: function (v) {
+					return /^\S+@\S+\.\S+$/.test(v);
+				},
+				message: (props) => `${props.value} is not a valid email!`,
+			},
 		},
-		thoughts: [thoughtSchema],
-		friends: [userSchema],
+		thoughts: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "thought",
+			},
+		],
+		friends: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "user",
+			},
+		],
 	},
 	{
 		toJSON: {
@@ -29,8 +46,8 @@ userSchema.virtual("friendCount").get(function () {
 	return this.friends.length;
 });
 
-userSchema.virtual("thoughts", {
-	ref: "Thought",
+userSchema.virtual("userThoughts", {
+	ref: Thought,
 	localField: "_id",
 	foreignField: "userId",
 });
