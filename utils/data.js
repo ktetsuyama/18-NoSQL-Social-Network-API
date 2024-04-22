@@ -52,39 +52,6 @@ const usernames = [
 	"Zoolander",
 ];
 
-const emails = [
-	"jQq8c@gmail.com",
-	"e1e3g@yahoo.com",
-	"LzX23Rv@hotmail.com",
-	"k2i9p@outlook.com",
-	"S5F4mO@icloud.com",
-	"3xW7Q4@aol.com",
-	"vRcN8@yahoo.com",
-	"2ZtQ4Rn@outlook.com",
-	"pA1Ez@gmail.com",
-	"s6Jb1o@hotmail.com",
-	"Q0xYb@aol.com",
-	"TgY1p@yahoo.com",
-	"4FjXsC@gmail.com",
-	"nDdO3g1@icloud.com",
-	"1iU4o5W@outlook.com",
-	"jFg7Sx@hotmail.com",
-	"mO5c6g4@icloud.com",
-	"6tJc6G@hotmail.com",
-	"R9k4ZrQ@yahoo.com",
-	"aS1E8b@aol.com",
-	"1R5lH@hotmail.com",
-	"h5L6Tn@icloud.com",
-	"e9W8L@aol.com",
-	"2V4f1o@hotmail.com",
-	"B7g1Nt@yahoo.com",
-	"R8k7eL@gmail.com",
-	"n9Y7z@hotmail.com",
-	"Q1pK7y@outlook.com",
-	"3jY8zQ@gmail.com",
-	"i6r2tS@yahoo.com",
-];
-
 const thoughtTitles = [
 	"We're all just older than we've ever been before.",
 	"Dreams are the brain's late-night movies.",
@@ -125,15 +92,28 @@ const getRandomThoughts = (int) => {
 	return results;
 };
 
-const getRandomEmails = (int) => {
-	const results = [];
-	for (let i = 0; i < int; i++) {
-		results.push({
-			thoughtName: getRandomArrItem(emails),
-		});
+const getRandomEmail = () => {
+	const usernameLength = Math.floor(Math.random() * (10 - 5 + 1)) + 5; // Random username length between 5 and 10 characters
+	const domain = [
+		"gmail.com",
+		"yahoo.com",
+		"hotmail.com",
+		"outlook.com",
+		"icloud.com",
+		"aol.com",
+	][Math.floor(Math.random() * 6)]; // Random domain from a list
+
+	let username = "";
+	const characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	for (let i = 0; i < usernameLength; i++) {
+		username += characters.charAt(
+			Math.floor(Math.random() * characters.length)
+		);
 	}
-	return results;
+
+	return username + "@" + domain;
 };
 
 // Export the functions for use in seed.js
-module.exports = { getRandomUsername, getRandomThoughts, getRandomEmails };
+module.exports = { getRandomUsername, getRandomThoughts, getRandomEmail };

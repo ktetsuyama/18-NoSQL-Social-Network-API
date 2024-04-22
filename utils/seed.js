@@ -3,7 +3,7 @@ const { Thought, User } = require("../models");
 const {
 	getRandomUsername,
 	getRandomThoughts,
-	getRandomEmails,
+	getRandomEmail,
 } = require("./data");
 
 connection.on("error", (err) => err);
@@ -24,32 +24,32 @@ connection.once("open", async () => {
 	if (usersCheck.length) {
 		await connection.dropCollection("users");
 	}
-	// Create empty array to hold the users
+	// Create empty array to hold the users and to hold thoughts
 	const users = [];
+	const thoughts = [];
 
 	// Loop 20 times -- add users to the users array
 	for (let i = 0; i < 20; i++) {
 		// Get some random thought objects using a helper function that we imported from ./data
-		const thoughts = getRandomThoughts(20);
+		const username = getRandomUsername();
+		const email = getRandomEmail();
+		const thoughtText = getRandomThoughts(1)[0].thoughtName;
+		const thought = await Thought.create({ thoughtText, username });
+		thoughts.push(thought);
 
-		const fullName = getRandomUsername();
-		const first = fullName.split(" ")[0];
-		const last = fullName.split(" ")[1];
-		const email = getRandomEmails();
-
-		users.push({
-			first,
-			last,
+		const user = await User.create({
+			username,
 			email,
-			thoughts,
+			thoughts: [thought._id],
 		});
+		users.push(user);
 	}
 
 	// Add users to the collection and await the results
 	const userData = await User.insertMany(users);
 
 	// Add thoughts to the collection and await the results
-	await Thought.insertOne({
+	await Thought.insertMany({
 		users: [...userData.map(({ _id }) => _id)],
 	});
 

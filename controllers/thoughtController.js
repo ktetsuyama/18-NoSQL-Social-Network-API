@@ -10,7 +10,7 @@ module.exports = {
 			res.status(500).json(err);
 		}
 	},
-	// Get a thought
+	// Get a thought by id
 	async getSingleThought(req, res) {
 		try {
 			const thought = await Thought.findOne({
@@ -47,8 +47,8 @@ module.exports = {
 				return res.status(404).json({ message: "No thought with that ID" });
 			}
 
-			await Student.deleteMany({ _id: { $in: thought.students } });
-			res.json({ message: "Thought and students deleted!" });
+			await User.deleteMany({ _id: { $in: thought.users } });
+			res.json({ message: "Thought and users deleted!" });
 		} catch (err) {
 			res.status(500).json(err);
 		}

@@ -46,7 +46,6 @@ module.exports = {
 
 			res.json({
 				user,
-				grade: await reaction(req.params.userId),
 			});
 		} catch (err) {
 			console.log(err);
