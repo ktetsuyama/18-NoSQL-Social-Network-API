@@ -50,6 +50,7 @@ connection.once("open", async () => {
 
 	// Add thoughts to the collection and await the results
 	await Thought.insertMany({
+		thoughtText: thoughts.map(({ thoughtText }) => thoughtText),
 		users: [...userData.map(({ _id }) => _id)],
 	});
 
