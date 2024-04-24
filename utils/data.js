@@ -73,6 +73,29 @@ const thoughtTitles = [
 	"We're all made of stardust, but forget to shine.",
 ];
 
+const reactionEmojis = [
+	"😂", // Tears of Joy
+	"❤️", // Red Heart
+	"😍", // Heart Eyes
+	"🔥", // Fire
+	"😊", // Smiling Face with Smiling Eyes
+	"🙌", // Raising Hands
+	"👏", // Clapping Hands
+	"🎉", // Party Popper
+	"👍", // Thumbs Up
+	"😎", // Smiling Face with Sunglasses
+	"🙏", // Folded Hands
+	"💯", // Hundred Points
+	"✨", // Sparkles
+	"😘", // Face Blowing a Kiss
+	"🤔", // Thinking Face
+	"👀", // Eyes
+	"💪", // Flexed Biceps
+	"👌", // OK Hand
+	"😜", // Winking Face with Tongue
+	"😅", // Grinning Face with Sweat
+];
+
 // Get a random item given an array
 const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
@@ -86,7 +109,7 @@ const getRandomThoughts = (int) => {
 	for (let i = 0; i < int; i++) {
 		results.push({
 			thoughtName: getRandomArrItem(thoughtTitles),
-			reactions: Math.floor(Math.random() * (990 - 70 + 1) + 70),
+			reactions: getRandomArrItem(reactionEmojis),
 		});
 	}
 	return results;

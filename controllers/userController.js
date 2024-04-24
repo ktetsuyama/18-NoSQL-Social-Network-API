@@ -1,5 +1,3 @@
-// ObjectId() method for converting userId string into an ObjectId for querying database
-const { ObjectId } = require("mongoose").Types;
 const { User, Thought } = require("../models");
 
 const userCount = async () => {
@@ -61,7 +59,7 @@ module.exports = {
 			res.status(500).json(err);
 		}
 	},
-	// create a new user
+	// update a new user
 	async updateUser(req, res) {
 		try {
 			const user = await User.update(req.body);
@@ -70,7 +68,7 @@ module.exports = {
 			res.status(500).json(err);
 		}
 	},
-	// Delete a user and remove them from the thought
+	// Delete a user and remove the thought
 	async deleteUser(req, res) {
 		try {
 			const user = await User.findOneAndRemove({
@@ -81,7 +79,7 @@ module.exports = {
 				return res.status(404).json({ message: "No such user exists" });
 			}
 
-			const thought = await Thought.findOneAndUpdate(
+			const thought = await Thought.findOneAndDelete(
 				{ users: req.params.userId },
 				{ $pull: { users: req.params.userId } },
 				{ new: true }
@@ -99,11 +97,46 @@ module.exports = {
 			res.status(500).json(err);
 		}
 	},
-	// create a new friend
-	async createFriend(req, res) {
+	// add a new friend
+	async addFriend(req, res) {
+		console.log("You are adding an friend");
+		console.log(req.body);
+
 		try {
-			const friend = await Friend.create(req.body);
-			res.json(friend);
+			const user = await User.findOneAndUpdate(
+				{ _id: req.params.userId },
+				{ $addToSet: { friends: req.body } },
+				{ runValidators: true, new: true }
+			);
+
+			if (!user) {
+				return res
+					.status(404)
+					.json({ message: "No user found with that ID :(" });
+			}
+
+			res.json(user);
+		} catch (err) {
+			res.status(500).json(err);
+		}
+	},
+
+	// remove a friend
+	async removeFriend(req, res) {
+		try {
+			const user = await User.findOneAndUpdate(
+				{ _id: req.params.userId },
+				{ $pull: { friend: { friendId: req.params.friendId } } },
+				{ runValidators: true, new: true }
+			);
+
+			if (!user) {
+				return res
+					.status(404)
+					.json({ message: "No user found with that ID :(" });
+			}
+
+			res.json(user);
 		} catch (err) {
 			res.status(500).json(err);
 		}

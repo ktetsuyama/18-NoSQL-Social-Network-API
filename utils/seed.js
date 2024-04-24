@@ -40,7 +40,7 @@ connection.once("open", async () => {
 		const user = await User.create({
 			username,
 			email,
-			thoughts: [thought._id],
+			thoughts: [thought._id, thoughtText],
 		});
 		users.push(user);
 	}
@@ -49,7 +49,7 @@ connection.once("open", async () => {
 	const userData = await User.insertMany(users);
 
 	// Add thoughts to the collection and await the results
-	await Thought.insertMany({
+	await Thought.create({
 		thoughtText: thoughts.map(({ thoughtText }) => thoughtText),
 		users: [...userData.map(({ _id }) => _id)],
 	});
