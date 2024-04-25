@@ -5,7 +5,7 @@ module.exports = {
 	async getThoughts(req, res) {
 		try {
 			const thoughts = await Thought.find();
-			res.json(thoughts);
+			res.json({ thoughts });
 		} catch (err) {
 			res.status(500).json(err);
 		}
@@ -30,6 +30,11 @@ module.exports = {
 	async createThought(req, res) {
 		try {
 			const thought = await Thought.create(req.body);
+			await User.findOneAndUpdate(
+				{ _id: req.body.userId },
+				{ $addToSet: { thoughts: thought } },
+				{ runValidators: true, new: true }
+			);
 			res.json(thought);
 		} catch (err) {
 			console.log(err);
