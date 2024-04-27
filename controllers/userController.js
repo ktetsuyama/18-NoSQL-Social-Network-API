@@ -64,9 +64,21 @@ module.exports = {
 	// update a new user
 	async updateUser(req, res) {
 		try {
+			if (!req.body.username && req.body.email) {
+				return res
+					.status(400)
+					.json({ error: "Username or email must be provided." });
+			}
+			const updateFields = {};
+			if (req.body.username) {
+				updateFields.username = req.body.username;
+			}
+			if (req.body.email) {
+				updateFields.email = req.body.email;
+			}
 			const updatedUser = await User.findOneAndUpdate(
 				{ _id: req.params.userId },
-				{ $push: { users: req.body } },
+				{ $set: updateFields },
 				{ new: true }
 			);
 			res.json(updatedUser);
