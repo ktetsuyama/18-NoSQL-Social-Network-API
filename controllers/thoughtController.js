@@ -1,4 +1,5 @@
-const { Thought, User, Reaction } = require("../models");
+const { Thought, User, reactionSchema } = require("../models");
+const mongoose = require("mongoose");
 
 module.exports = {
 	// Get all thoughts
@@ -92,21 +93,26 @@ module.exports = {
 		console.log("You are adding a reaction");
 
 		const { thoughtId } = req.params;
-		console.log(thoughtId);
+		const { reactionBody, username } = req.body;
+		console.log(thoughtId, req.body);
 		try {
-			const reaction = await Reaction.create(req.body);
-			const thought = await Thought.findOneAndUpdate(
-				{ _id: thoughtId },
-				{ $addToSet: { reactions: reaction } },
+			const reaction = {
+				reactionId: new mongoose.Types.ObjectId(),
+				reactionBody,
+				username,
+			};
+			const thought = await Thought.findByIdAndUpdate(
+				thoughtId,
+				{ $push: { reactions: reaction } },
 				{ runValidators: true, new: true }
 			);
-			console.log(thought);
 
-			if (!reaction) {
+			if (!thought) {
 				return res
 					.status(404)
-					.json({ message: "No reaction found with that ID" });
+					.json({ message: "No thought found with that ID" });
 			}
+			console.log(thought);
 
 			res.json(thought);
 		} catch (err) {
@@ -117,26 +123,21 @@ module.exports = {
 	// remove a reation
 	async removeReaction(req, res) {
 		console.log("You are deleting a reaction");
-
-		const { reactionId } = req.params;
-		console.log(reactionId);
 		try {
-			if (!req.body._id) {
-				return res.status(400).json({ error: "Reaction id is required" });
-			}
-			const reaction = new ObjectId(req.params.reactionId);
-			const thought = await Thought.findOneAndUpdate(
-				{ _id: thoughtId },
-				{ $pull: { reactions: reaction } },
+			const { thoughtId } = req.params;
+			const { reactionId } = req.body;
+			const thought = await Thought.findByIdAndUpdate(
+				thoughtId,
+				{ $pull: { reactions: { _id: reactionId } } },
 				{ runValidators: true, new: true }
 			);
-			console.log(thought);
 
-			if (!reaction) {
+			if (!thought) {
 				return res
 					.status(404)
-					.json({ message: "No reaction found with that ID" });
+					.json({ message: "No thought found with that ID" });
 			}
+			console.log(thought);
 
 			res.json(thought);
 		} catch (err) {
