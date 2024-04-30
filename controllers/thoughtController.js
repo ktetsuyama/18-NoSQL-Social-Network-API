@@ -126,9 +126,10 @@ module.exports = {
 		try {
 			const { thoughtId } = req.params;
 			const { reactionId } = req.body;
+			console.log(reactionId);
 			const thought = await Thought.findByIdAndUpdate(
 				thoughtId,
-				{ $pull: { reactions: { _id: reactionId } } },
+				{ $pull: { reactions: { reactionId } } },
 				{ runValidators: true, new: true }
 			);
 
