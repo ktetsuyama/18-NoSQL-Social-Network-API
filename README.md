@@ -24,7 +24,7 @@ Given a social network API, when the client enters the command to invoke the app
 ## Solution
 
 Here is link to the video of the application:
-[Link to video]()
+[Link to video](https://youtu.be/HrKwLs98NVc)
 
 ## Contributors
 
