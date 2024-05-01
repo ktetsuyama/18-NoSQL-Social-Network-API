@@ -105,12 +105,26 @@ const getRandomUsername = () =>
 
 // Function to generate random thoughts that we can add to username object.
 const getRandomThoughts = (int) => {
+	const maxReactions = 50;
+	const minReactions = 1;
 	const results = [];
 	for (let i = 0; i < int; i++) {
-		results.push({
+		const thought = {
 			thoughtName: getRandomArrItem(thoughtTitles),
-			reactions: getRandomArrItem(reactionEmojis),
-		});
+			reactions: [],
+		};
+		const numReactions =
+			Math.floor(Math.random() * (maxReactions - minReactions + 1)) +
+			minReactions;
+		for (let j = 0; j < numReactions; j++) {
+			const reaction = {
+				reactionBody: getRandomArrItem(reactionEmojis),
+				username: getRandomUsername(),
+				createdAt: new Date(),
+			};
+			thought.reactions.push(reaction);
+		}
+		results.push(thought);
 	}
 	return results;
 };

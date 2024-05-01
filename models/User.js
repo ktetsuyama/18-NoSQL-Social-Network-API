@@ -52,11 +52,6 @@ userSchema.virtual("userThoughts", {
 	foreignField: "userId",
 });
 
-userSchema.pre("remove", async function (next) {
-	await this.model("Thought").deleteMany({ userId: this._id });
-	next();
-});
-
 const User = model("user", userSchema);
 
 module.exports = User;

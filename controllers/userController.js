@@ -89,30 +89,18 @@ module.exports = {
 	// Delete a user and remove the thought
 	async deleteUser(req, res) {
 		try {
-			const user = await User.findOneAndRemove({
-				_id: req.params.userId,
-			});
-
+			const user = await User.findByIdAndDelete(req.params.userId);
 			if (!user) {
 				return res.status(404).json({ message: "No such user exists" });
 			}
-
-			const thought = await Thought.findOneAndDelete(
-				{ users: req.params.userId },
-				{ $pull: { users: req.params.userId } },
-				{ new: true }
-			);
-
-			if (!thought) {
-				return res.status(404).json({
-					message: "User deleted, but no thoughts found",
-				});
+			for (const thoughtId of user.thoughts) {
+				await Thought.findByIdAndDelete(thoughtId);
 			}
 
 			res.json({ message: "User successfully deleted" });
 		} catch (err) {
-			console.log(err);
-			res.status(500).json(err);
+			console.error(err);
+			res.status(500).json({ message: "Internal server error" });
 		}
 	},
 	// add a new friend

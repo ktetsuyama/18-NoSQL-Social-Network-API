@@ -32,26 +32,32 @@ connection.once("open", async () => {
 	for (let i = 0; i < 20; i++) {
 		const username = getRandomUsername();
 		const email = getRandomEmail();
-		const thoughtText = getRandomThoughts(1)[0].thoughtName;
+		const numThoughts = Math.floor(Math.random() * 5) + 1;
+		const thoughtText = getRandomThoughts(numThoughts);
 
-		// Create thought document
-		const thought = new Thought({
-			thoughtText: thoughtText,
-			username: username,
-		});
+		// Create an array to hold the thought documents
+		const thoughtDocuments = [];
 
-		// Push thought document into the thoughts array
-		thoughts.push(thought);
+		// Create thought documents and push them into the array
+		for (const thought of thoughtText) {
+			const thoughtDocument = new Thought({
+				thoughtText: thought.thoughtName,
+				username: username,
+				reactions: thought.reactions, // Attach reactions to the thought
+			});
+			thoughtDocuments.push(thoughtDocument);
+		}
 
 		// Create user document
 		const user = new User({
 			username: username,
 			email: email,
-			thoughts: [thought._id],
+			thoughts: thoughtDocuments.map((thought) => thought._id),
 		});
 
 		// Push user document into the users array
 		users.push(user);
+		thoughts.push(...thoughtDocuments);
 	}
 
 	// Insert users into the database
